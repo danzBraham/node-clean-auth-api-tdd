@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1704022695615" clover="3.2.0">
-  <project timestamp="1704022695615" name="All files">
-    <metrics statements="42" coveredstatements="42" conditionals="27" coveredconditionals="27" methods="8" coveredmethods="8" elements="77" coveredelements="77" complexity="0" loc="42" ncloc="42" packages="2" files="6" classes="6"/>
+<coverage generated="1704023222772" clover="3.2.0">
+  <project timestamp="1704023222772" name="All files">
+    <metrics statements="45" coveredstatements="45" conditionals="27" coveredconditionals="27" methods="10" coveredmethods="10" elements="82" coveredelements="82" complexity="0" loc="45" ncloc="45" packages="3" files="7" classes="7"/>
     <package name="Commons.exceptions">
       <metrics statements="18" coveredstatements="18" conditionals="3" coveredconditionals="3" methods="4" coveredmethods="4"/>
       <file name="AuthenticationError.js" path="/home/abraham/My-Projects/node-clean-auth-api-tdd/src/Commons/exceptions/AuthenticationError.js">
@@ -33,6 +33,15 @@
         <line num="5" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="Domains.user">
+      <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+      <file name="UserRepository.js" path="/home/abraham/My-Projects/node-clean-auth-api-tdd/src/Domains/user/UserRepository.js">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
       </file>
     </package>
     <package name="Domains.user.entities">
