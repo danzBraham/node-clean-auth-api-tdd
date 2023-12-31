@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1704023222772" clover="3.2.0">
-  <project timestamp="1704023222772" name="All files">
-    <metrics statements="45" coveredstatements="45" conditionals="27" coveredconditionals="27" methods="10" coveredmethods="10" elements="82" coveredelements="82" complexity="0" loc="45" ncloc="45" packages="3" files="7" classes="7"/>
+<coverage generated="1704023618243" clover="3.2.0">
+  <project timestamp="1704023618244" name="All files">
+    <metrics statements="47" coveredstatements="47" conditionals="27" coveredconditionals="27" methods="11" coveredmethods="11" elements="85" coveredelements="85" complexity="0" loc="47" ncloc="47" packages="4" files="8" classes="8"/>
+    <package name="Applications.security">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="PasswordHash.js" path="/home/abraham/My-Projects/node-clean-auth-api-tdd/src/Applications/security/PasswordHash.js">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+      </file>
+    </package>
     <package name="Commons.exceptions">
       <metrics statements="18" coveredstatements="18" conditionals="3" coveredconditionals="3" methods="4" coveredmethods="4"/>
       <file name="AuthenticationError.js" path="/home/abraham/My-Projects/node-clean-auth-api-tdd/src/Commons/exceptions/AuthenticationError.js">
