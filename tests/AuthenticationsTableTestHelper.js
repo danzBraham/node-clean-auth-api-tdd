@@ -4,7 +4,7 @@ const pool = require('../src/Infrastructures/database/postgres/pool');
 const AuthenticationsTableTestHelper = {
   async addToken({ token }) {
     const query = {
-      text: 'INSERT INTO authentications VALUES ($1)',
+      text: 'INSERT INTO authentications VALUES($1)',
       values: [token],
     };
 

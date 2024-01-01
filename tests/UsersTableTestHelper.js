@@ -9,7 +9,7 @@ const UsersTableTestHelper = {
     fullname = 'Zidan Abraham',
   }) {
     const query = {
-      text: 'INSERT INTO users VALUES ($1, $2, $3, $4)',
+      text: 'INSERT INTO users VALUES($1, $2, $3, $4)',
       values: [id, username, password, fullname],
     };
 
