@@ -1,7 +1,7 @@
 const InvariantError = require('../InvariantError');
 
 describe('InvariantError', () => {
-  it('should create an error correctly', () => {
+  it('should create InvariantError error correctly', () => {
     const invariantError = new InvariantError('an error occurs');
 
     expect(invariantError.statusCode).toEqual(400);

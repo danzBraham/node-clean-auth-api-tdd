@@ -1,7 +1,7 @@
 const NotFoundError = require('../NotFoundError');
 
 describe('NotFoundError', () => {
-  it('should create error correctly', () => {
+  it('should create NotFoundError correctly', () => {
     const notFoundError = new NotFoundError('not found!');
 
     expect(notFoundError.message).toEqual('not found!');

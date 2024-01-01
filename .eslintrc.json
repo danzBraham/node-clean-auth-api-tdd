@@ -8,6 +8,11 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
+  "globals": {
+    "describe": "writable",
+    "it": "writable",
+    "expect": "writable"
+  },
   "rules": {
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
