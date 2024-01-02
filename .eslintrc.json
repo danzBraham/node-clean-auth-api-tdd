@@ -12,7 +12,9 @@
     "jest": "writable",
     "describe": "writable",
     "it": "writable",
-    "expect": "writable"
+    "expect": "writable",
+    "afterAll": "writable",
+    "afterEach": "writable"
   },
   "rules": {
     "no-underscore-dangle": "off",
