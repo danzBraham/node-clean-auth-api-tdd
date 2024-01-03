@@ -17,6 +17,9 @@ dependencies:
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
+  instances-container:
+    specifier: ^2.0.6
+    version: 2.0.6
   nanoid:
     specifier: 3.x.x
     version: 3.3.7
@@ -2352,6 +2355,10 @@ packages:
 
   /inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
+
+  /instances-container@2.0.6:
+    resolution: {integrity: sha512-h117iLPh+IuCCo44oh4FftUakm8df4cf4pg5bm6EQSkEl5Ol26yKVdyB4T4MNJshiE75aFLS8j1IIi8obe8B+g==}
+    dev: false
 
   /internal-slot@1.0.6:
     resolution: {integrity: sha512-Xj6dv+PsbtwyPpEflsejS+oIZxmMlV44zAhG479uYu89MsjcYOhCFnNyKrkJrihbsiasQyY0afoCl/9BLR65bg==}
