@@ -40,5 +40,5 @@ pnpm run test
 **Starting the Development Server:**
 
 ```bash
-pnpm run dev
+pnpm run start:dev
 ```
