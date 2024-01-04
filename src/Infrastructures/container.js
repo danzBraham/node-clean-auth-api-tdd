@@ -11,7 +11,7 @@ const UserRepositoryPostgres = require('./repository/UserRepositoryPostgres');
 const BcryptPasswordHash = require('./security/BcryptPasswordHash');
 
 // use case
-const UserRepository = require('../Domains/users/UserRepository');
+const UserRepository = require('../Domains/user/UserRepository');
 const PasswordHash = require('../Applications/security/PasswordHash');
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
 
