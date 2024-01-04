@@ -1,0 +1,809 @@
+{
+	"info": {
+		"_postman_id": "600c6935-ef53-4e70-a43b-202e3fd0a391",
+		"name": "Auth API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22896269"
+	},
+	"item": [
+		{
+			"name": "Add User with Valid Payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 201 status code', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test('should response with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('success');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson.data.addedUser).to.be.an('object');\r",
+							"    pm.expect(responseJson.data.addedUser.id).to.be.a('string');\r",
+							"    pm.expect(responseJson.data.addedUser.username).to.be.a('string');\r",
+							"    pm.expect(responseJson.data.addedUser.fullname).to.be.a('string');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{newUsername}}_{{$timestamp}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add User with Bad Payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"   pm.response.to.have.status(400);\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson.message).to.be.a('string');\r",
+							"    pm.expect(responseJson.message).to.not.equals('');\r",
+							"    pm.expect(responseJson.message).to.not.equals(null);\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badAuthenticationPayloads = pm.environment.get('badAuthenticationPayloads');\r",
+							" \r",
+							"    if(badAuthenticationPayloads && badAuthenticationPayloads.length > 0) {\r",
+							"        postman.setNextRequest('Add User with Bad Payload');\r",
+							"    }\r",
+							"}\r",
+							" \r",
+							"repeatRequestUntilDatasetEmpty();"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let badAuthenticationPayloads = pm.environment.get('badAuthenticationPayloads');\r",
+							"\r",
+							"if (!badAuthenticationPayloads || badAuthenticationPayloads.length === 0) {\r",
+							"    badAuthenticationPayloads = [\r",
+							"        {},\r",
+							"        { password: 'secret', fullname: 'Zidan Abraham' },\r",
+							"        { username: 123, password: 'secret', fullname: 'Zidan Abraham' },\r",
+							"        { username: 'danzbraham', fullname: 'Zidan Abraham' },\r",
+							"        { username: 'danzbraham', password: true, fullname: 'Zidan Abraham' },\r",
+							"        { username: 'danzbraham', password: 'secret' },\r",
+							"        { username: 'danzbraham', password: 'secret', fullname: [] },\r",
+							"    ];\r",
+							"}\r",
+							"\r",
+							"const currentBadAuthenticationPayload = badAuthenticationPayloads.shift();\r",
+							"pm.environment.set('currentBadAuthenticationPayload', JSON.stringify(currentBadAuthenticationPayload));\r",
+							"pm.environment.set('badAuthenticationPayloads', badAuthenticationPayloads);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadAuthenticationPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add User with Exist Username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 400 status code', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('should response with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.equal('username unavailable');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const host = pm.environment.get('host');\r",
+							"const port = pm.environment.get('port');\r",
+							"\r",
+							"const postRequest = {\r",
+							"    url: `http://${host}:${port}/users`,\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: pm.environment.get('newUsername'),\r",
+							"            password: pm.environment.get('newPassword'),\r",
+							"            fullname: pm.environment.get('newFullname')\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(postRequest, (error, response) => {\r",
+							"    console.log(error ? error : response.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add User with Restricted Character",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 400 status code', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('should response with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.equal('cannot create a new user because the username contain restricted character');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"danz braham\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add User with More than 50 Username Characters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 400 status code', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('should response with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.equal('cannot create a new user because the username has more than 50 characters');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"danzbrahamdanzbrahamdanzbrahamdanzbrahamdanzbrahamdanzbraham\",\r\n    \"password\": \"{{newPassword}}\",\r\n    \"fullname\": \"{{newFullname}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login with Valid Credential",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const host = pm.environment.get('host');\r",
+							"const port = pm.environment.get('port');\r",
+							"\r",
+							"const postRequest = {\r",
+							"    url: `http://${host}:${port}/users`,\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: pm.environment.get('newUsername'),\r",
+							"            password: pm.environment.get('newPassword'),\r",
+							"            fullname: pm.environment.get('newFullname')\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(postRequest, (error, response) => {\r",
+							"    console.log(error ? error : response.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 201 status code', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test('should respose with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('success');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson.data.accessToken).to.be.a('string');\r",
+							"    pm.expect(responseJson.data.refreshToken).to.be.a('string');\r",
+							"\r",
+							"    pm.environment.set('accessToken', responseJson.data.accessToken);\r",
+							"    pm.environment.set('refreshToken', responseJson.data.refreshToken);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login with Invalid Username",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const host = pm.environment.get('host');\r",
+							"const port = pm.environment.get('port');\r",
+							"\r",
+							"const postRequest = {\r",
+							"    url: `http://${host}:${port}/users`,\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: pm.environment.get('newUsername'),\r",
+							"            password: pm.environment.get('newPassword'),\r",
+							"            fullname: pm.environment.get('newFullname')\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(postRequest, (error, response) => {\r",
+							"    console.log(error ? error : response.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 400 status code', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('should respose with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.be.an('string');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"xxxx\",\r\n    \"password\": \"{{newPassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login with Invalid Password",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const host = pm.environment.get('host');\r",
+							"const port = pm.environment.get('port');\r",
+							"\r",
+							"const postRequest = {\r",
+							"    url: `http://${host}:${port}/users`,\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: pm.environment.get('newUsername'),\r",
+							"            password: pm.environment.get('newPassword'),\r",
+							"            fullname: pm.environment.get('newFullname')\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(postRequest, (error, response) => {\r",
+							"    console.log(error ? error : response.json());\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 401 status code', () => {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test('should respose with correct property and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.be.an('string');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{newUsername}}\",\r\n    \"password\": \"xxx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Access Token with Valid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 200 status code', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('should response with corrent message and property', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('success');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson.data.accessToken).to.be.a('string');\r",
+							"    pm.expect(responseJson.data.accessToken).to.not.equals('');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Access Token with invalid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response 400 status code', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('should response with corrent message and property', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.equal('invalid refresh token');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"xxx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout with Valid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response with 200 status code', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response should contain status with success value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('success');\r",
+							"});\r",
+							"\r",
+							"pm.test('when refreshing access token with the deleted refresh token', () => {\r",
+							"    const host = pm.environment.get('host');\r",
+							"    const port = pm.environment.get('port');\r",
+							"    const refreshToken = pm.environment.get('refreshToken');\r",
+							"\r",
+							"    const putRequest = {\r",
+							"        url: `http://${host}:${port}/authentications`,\r",
+							"        method: 'PUT',\r",
+							"        header: {\r",
+							"            'Content-Type': 'application/json',\r",
+							"        },\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify({ refreshToken }),\r",
+							"        },\r",
+							"    };\r",
+							"\r",
+							"    pm.sendRequest(putRequest, (error, response) => {\r",
+							"        if (!error) {\r",
+							"            pm.test('the response code should be 400', () => {\r",
+							"                pm.expect(response.code).to.equals(400);\r",
+							"            });\r",
+							"        }\r",
+							"    });\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout with Invalid Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('should response with 400 status code', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test('response should contain correct status and message', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"    pm.expect(responseJson.status).to.equal('fail');\r",
+							"    pm.expect(responseJson.message).to.equal('refresh token not found in database');\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"refreshToken\": \"xxx\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{port}}/authentications",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"authentications"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
