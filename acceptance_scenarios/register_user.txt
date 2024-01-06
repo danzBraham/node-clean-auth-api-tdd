@@ -1,0 +1,28 @@
+Feature: User Registration
+As a user, I want to register myself as an entity for authentication purposes.
+
+Payload:
+- username (string)
+- password (string)
+- fullname (string)
+
+Specification:
+- When registering without providing the required entities
+  - An error must be thrown
+- When registering with entities of the wrong data type
+  - An error must be thrown
+- When registering with a username longer than 50 characters
+  - An error must be thrown
+- When registering with a username containing prohibited characters
+  - An error must be thrown
+- When registering with a username that is already in use
+  - An error must be thrown
+- When registering with a valid payload:
+  - A new user must be created
+  - Encrypt the user's password
+  - Save the new user to the database
+  - Return the user's request with the inserted user value
+
+System-side notes:
+  - Implement a secure password encryption algorithm
+  - Ensure database transactions are handled appropriately to maintain data integrity
