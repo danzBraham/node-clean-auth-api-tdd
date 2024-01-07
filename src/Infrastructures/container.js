@@ -24,7 +24,11 @@ container.register([
     key: UserRepository.name,
     Class: UserRepositoryPostgres,
     parameter: {
-      dependencies: [{ concrete: pool }, { concrete: nanoid }],
+      dependencies: [
+        { concrete: pool },
+        { concrete: nanoid },
+        { name: 'passwordHash', internal: PasswordHash.name },
+      ],
     },
   },
   {

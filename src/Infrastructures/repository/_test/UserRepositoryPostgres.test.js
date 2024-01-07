@@ -1,9 +1,12 @@
+const bcrypt = require('bcrypt');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const AuthenticationError = require('../../../Commons/exceptions/AuthenticationError');
 const RegisterUser = require('../../../Domains/user/entities/RegisterUser');
 const RegisteredUser = require('../../../Domains/user/entities/RegisteredUser');
 const pool = require('../../database/postgres/pool');
 const UserRepositoryPostgres = require('../UserRepositoryPostgres');
+const BcryptPasswordHash = require('../../security/BcryptPasswordHash');
 
 describe('UserRepositoryPostgres', () => {
   afterEach(async () => {
@@ -73,6 +76,37 @@ describe('UserRepositoryPostgres', () => {
         username: 'danzbraham',
         fullname: 'Zidan Abraham',
       }));
+    });
+  });
+
+  describe('verifyUserCredential', () => {
+    it('should throw AuthenticationError when credentials are incorrect', async () => {
+      // Arrange
+      const bcryptPasswordHash = new BcryptPasswordHash(bcrypt);
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {}, bcryptPasswordHash);
+
+      // Action and Assert
+      await expect(userRepositoryPostgres.verifyUserCredential('random', 'password')).rejects.toThrow(AuthenticationError);
+    });
+
+    it('should throw AuthenticationError when password are incorrect', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ username: 'danzbraham', password: 'secret' });
+      const bcryptPasswordHash = new BcryptPasswordHash(bcrypt);
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {}, bcryptPasswordHash);
+
+      // Action and Assert
+      await expect(userRepositoryPostgres.verifyUserCredential('danzbraham', 'password')).rejects.toThrow(AuthenticationError);
+    });
+
+    it('should return user id correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ username: 'danzbraham', password: 'secret' });
+      const bcryptPasswordHash = new BcryptPasswordHash(bcrypt);
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {}, bcryptPasswordHash);
+
+      // Action and Assert
+      await expect(userRepositoryPostgres.verifyUserCredential('danzbraham', 'secret')).resolves.toEqual('user-123');
     });
   });
 });

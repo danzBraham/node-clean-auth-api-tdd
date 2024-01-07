@@ -1,12 +1,14 @@
+const AuthenticationError = require('../../Commons/exceptions/AuthenticationError');
 const InvariantError = require('../../Commons/exceptions/InvariantError');
 const RegisteredUser = require('../../Domains/user/entities/RegisteredUser');
 const UserRepository = require('../../Domains/user/UserRepository');
 
 class UserRepositoryPostgres extends UserRepository {
-  constructor(pool, idGenerator) {
+  constructor(pool, idGenerator, passwordHash) {
     super();
     this._pool = pool;
     this._idGenerator = idGenerator;
+    this._passwordHash = passwordHash;
   }
 
   async verifyAvailableUsername(username) {
@@ -34,6 +36,27 @@ class UserRepositoryPostgres extends UserRepository {
     const result = await this._pool.query(query);
 
     return new RegisteredUser({ ...result.rows[0] });
+  }
+
+  async verifyUserCredential(username, password) {
+    const query = {
+      text: 'SELECT id, password FROM users WHERE username = $1',
+      values: [username],
+    };
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new AuthenticationError('The credentials you provided are incorrect');
+    }
+
+    const { id, password: hashedPassword } = result.rows[0];
+    const match = await this._passwordHash.check(password, hashedPassword);
+
+    if (!match) {
+      throw new AuthenticationError('Invalid password');
+    }
+
+    return id;
   }
 }
 
