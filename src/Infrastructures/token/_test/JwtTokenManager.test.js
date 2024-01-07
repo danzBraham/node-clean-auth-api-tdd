@@ -1,6 +1,5 @@
 const Jwt = require('@hapi/jwt');
 const JwtTokenManager = require('../JwtTokenManager');
-const InvariantError = require('../../../Commons/exceptions/InvariantError');
 
 process.env.ACCESS_TOKEN_KEY = 'mock-access-token-key';
 process.env.REFRESH_TOKEN_KEY = 'mock-access-refresh-key';
