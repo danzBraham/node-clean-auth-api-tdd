@@ -25,23 +25,30 @@ class AuthenticationUseCase {
     return { accessToken, refreshToken };
   }
 
-  _verifyPutUseCasePayload({ refreshToken }) {
+  _verifyRefreshTokenUseCasePayload({ refreshToken }) {
     if (!refreshToken) {
-      throw new Error('PUT_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('REFRESH_TOKEN_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof refreshToken !== 'string') {
-      throw new Error('PUT_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('REFRESH_TOKEN_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 
   async putAuthentication(useCasePayload) {
-    this._verifyPutUseCasePayload(useCasePayload);
+    this._verifyRefreshTokenUseCasePayload(useCasePayload);
     const { refreshToken } = useCasePayload;
     await this._authenticationRepository.verifyRefreshToken(refreshToken);
     const { id } = await this._tokenManager.verifyRefreshToken(refreshToken);
     const accessToken = await this._tokenManager.generateAccessToken({ id });
     return { accessToken };
+  }
+
+  async deleteAuthentication(useCasePayload) {
+    this._verifyRefreshTokenUseCasePayload(useCasePayload);
+    const { refreshToken } = useCasePayload;
+    await this._authenticationRepository.verifyRefreshToken(refreshToken);
+    await this._authenticationRepository.deleteRefreshToken(refreshToken);
   }
 }
 

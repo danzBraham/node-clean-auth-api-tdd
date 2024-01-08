@@ -83,7 +83,7 @@ describe('AuthenticationUseCase', () => {
       const useCasePayload = {};
 
       // Action and Assert
-      await expect(authenticationUseCase.putAuthentication(useCasePayload)).rejects.toThrow('PUT_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY');
+      await expect(authenticationUseCase.putAuthentication(useCasePayload)).rejects.toThrow('REFRESH_TOKEN_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY');
     });
 
     it('should throw error when useCasePayload did not meet data type specification', async () => {
@@ -91,7 +91,7 @@ describe('AuthenticationUseCase', () => {
       const useCasePayload = { refreshToken: true };
 
       // Action and Assert
-      await expect(authenticationUseCase.putAuthentication(useCasePayload)).rejects.toThrow('PUT_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      await expect(authenticationUseCase.putAuthentication(useCasePayload)).rejects.toThrow('REFRESH_TOKEN_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION');
     });
 
     it('should orchestrating the put authentication user action correctly', async () => {
@@ -120,6 +120,45 @@ describe('AuthenticationUseCase', () => {
       expect(mockAuthenticationRepository.verifyRefreshToken).toHaveBeenCalledWith(refreshToken);
       expect(mockTokenManager.verifyRefreshToken).toHaveBeenCalledWith(refreshToken);
       expect(mockTokenManager.generateAccessToken).toHaveBeenCalledWith({ id });
+    });
+  });
+
+  describe('deleteAuthentication', () => {
+    it('should throw error when useCasePayload did not contain needed property', async () => {
+    // Arrange
+      const useCasePayload = {};
+
+      // Action and Assert
+      await expect(authenticationUseCase.putAuthentication(useCasePayload)).rejects.toThrow('REFRESH_TOKEN_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY');
+    });
+
+    it('should throw error when useCasePayload did not meet data type specification', async () => {
+    // Arrange
+      const useCasePayload = { refreshToken: true };
+
+      // Action and Assert
+      await expect(authenticationUseCase.putAuthentication(useCasePayload)).rejects.toThrow('REFRESH_TOKEN_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    });
+
+    it('should orchestrating the delete authentication user action correctly', async () => {
+    // Arrange
+      const refreshToken = 'refresh-token';
+      const useCasePayload = { refreshToken };
+
+      // mocking needed function
+      mockAuthenticationRepository.verifyRefreshToken = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve());
+      mockAuthenticationRepository.deleteRefreshToken = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve());
+
+      // Action
+      await authenticationUseCase.deleteAuthentication(useCasePayload);
+
+      // Assert
+      expect(mockAuthenticationRepository.verifyRefreshToken).toHaveBeenCalledWith(refreshToken);
+      expect(mockAuthenticationRepository.deleteRefreshToken).toHaveBeenCalledWith(refreshToken);
     });
   });
 });
