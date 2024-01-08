@@ -5,6 +5,7 @@ class AuthenticationsHandler {
     this._container = container;
     this.postAuthenticationHandler = this.postAuthenticationHandler.bind(this);
     this.putAuthenticationHandler = this.putAuthenticationHandler.bind(this);
+    this.deleteAuthenticationHandler = this.deleteAuthenticationHandler.bind(this);
   }
 
   async postAuthenticationHandler(request, h) {
@@ -26,6 +27,18 @@ class AuthenticationsHandler {
     const response = h.response({
       status: 'success',
       data: { ...accessToken },
+    });
+    response.code(200);
+    return response;
+  }
+
+  async deleteAuthenticationHandler(request, h) {
+    const authenticationUseCase = this._container.getInstance(AuthenticationUseCase.name);
+    await authenticationUseCase.deleteAuthentication(request.payload);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Refresh token successfully removed',
     });
     response.code(200);
     return response;

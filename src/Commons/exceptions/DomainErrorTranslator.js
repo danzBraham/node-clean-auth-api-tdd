@@ -14,6 +14,8 @@ DomainErrorTranslator._directories = {
   'REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER': new InvariantError('cannot create a new user because the username contain restricted character'),
   'GET_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY': new AuthenticationError('cannot get authentication because the required properties are missing'),
   'GET_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION': new AuthenticationError('cannot get authentication because the data type does not match'),
+  'REFRESH_TOKEN_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY': new AuthenticationError('cannot get authentication because the required properties are missing'),
+  'REFRESH_TOKEN_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION': new AuthenticationError('cannot get authentication because the data type does not match'),
 };
 
 module.exports = DomainErrorTranslator;

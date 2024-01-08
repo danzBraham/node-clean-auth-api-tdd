@@ -21,6 +21,12 @@ describe('DomainErrorTranslator', () => {
 
     expect(DomainErrorTranslator.translate(new Error('GET_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION')))
       .toStrictEqual(new AuthenticationError('cannot get authentication because the data type does not match'));
+
+    expect(DomainErrorTranslator.translate(new Error('REFRESH_TOKEN_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY')))
+      .toStrictEqual(new AuthenticationError('cannot get authentication because the required properties are missing'));
+
+    expect(DomainErrorTranslator.translate(new Error('REFRESH_TOKEN_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION')))
+      .toStrictEqual(new AuthenticationError('cannot get authentication because the data type does not match'));
   });
 
   it('should return original error when error message is not needed to translate', () => {
