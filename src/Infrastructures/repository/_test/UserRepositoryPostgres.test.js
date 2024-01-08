@@ -14,7 +14,7 @@ describe('UserRepositoryPostgres', () => {
   });
 
   afterAll(async () => {
-    pool.end();
+    await pool.end();
   });
 
   describe('verifyAvailableUsername', () => {
