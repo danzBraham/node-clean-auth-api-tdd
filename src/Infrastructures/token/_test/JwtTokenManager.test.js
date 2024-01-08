@@ -1,5 +1,6 @@
 const Jwt = require('@hapi/jwt');
 const JwtTokenManager = require('../JwtTokenManager');
+const InvariantError = require('../../../Commons/exceptions/InvariantError');
 
 process.env.ACCESS_TOKEN_KEY = 'mock-access-token-key';
 process.env.REFRESH_TOKEN_KEY = 'mock-access-refresh-key';
@@ -42,15 +43,22 @@ describe('JwtTokenManager', () => {
   });
 
   describe('verifyRefreshToken', () => {
+    it('should throw InvariantError when refresh token is invalid', async () => {
+      // Arrange
+      const jwtTokenManager = new JwtTokenManager(Jwt);
+
+      // Action and Assert
+      await expect(jwtTokenManager.verifyRefreshToken('invalid-token')).rejects.toThrow(InvariantError);
+    });
+
     it('should verify refresh token signature correctly', async () => {
       // Arrange
       const jwtTokenManager = new JwtTokenManager(Jwt);
-      jwtTokenManager.verifyRefreshToken = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({ id: 'user-123' }));
+      const payload = { id: 'user-123' };
+      const refreshToken = await jwtTokenManager.generateRefreshToken(payload);
 
       // Action
-      const { id } = await jwtTokenManager.verifyRefreshToken('valid-token');
+      const { id } = await jwtTokenManager.verifyRefreshToken(refreshToken);
 
       // Assert
       expect(id).toEqual('user-123');
