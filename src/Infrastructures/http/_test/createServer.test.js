@@ -188,4 +188,73 @@ describe('HTTP server', () => {
       expect(responseJson.message).toEqual('there was a failure on our server');
     });
   });
+
+  describe('When POST /authentications', () => {
+    it('should response 201 and persisted token', async () => {
+      // Arrange
+      const username = 'danzbraham';
+      const password = 'secret';
+      await UsersTableTestHelper.addUser({ username, password });
+      const requestPayload = { username, password };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(201);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.accessToken).toBeDefined();
+      expect(responseJson.data.refreshToken).toBeDefined();
+    });
+
+    it('should response 401 when credentials are incorrect', async () => {
+      // Arrange
+      const username = 'danzbraham';
+      const password = 'secret';
+      await UsersTableTestHelper.addUser({ username, password });
+      const requestPayload = { username: 'invalid-username', password: 'invalid-password' };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('The credentials you provided are incorrect');
+    });
+
+    it('should response 401 when password is invalid', async () => {
+      // Arrange
+      const username = 'danzbraham';
+      const password = 'secret';
+      await UsersTableTestHelper.addUser({ username, password });
+      const requestPayload = { username, password: 'invalid-password' };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('Invalid password');
+    });
+  });
 });

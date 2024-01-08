@@ -1,4 +1,5 @@
 const DomainErrorTranslator = require('../DomainErrorTranslator');
+const AuthenticationError = require('../AuthenticationError');
 const InvariantError = require('../InvariantError');
 
 describe('DomainErrorTranslator', () => {
@@ -14,6 +15,12 @@ describe('DomainErrorTranslator', () => {
 
     expect(DomainErrorTranslator.translate(new Error('REGISTER_USER.USERNAME_CONTAIN_RESTRICTED_CHARACTER')))
       .toStrictEqual(new InvariantError('cannot create a new user because the username contain restricted character'));
+
+    expect(DomainErrorTranslator.translate(new Error('GET_AUTHENTICATION.NOT_CONTAIN_NEEDED_PROPERTY')))
+      .toStrictEqual(new AuthenticationError('cannot get authentication because the required properties are missing'));
+
+    expect(DomainErrorTranslator.translate(new Error('GET_AUTHENTICATION.NOT_MEET_DATA_TYPE_SPECIFICATION')))
+      .toStrictEqual(new AuthenticationError('cannot get authentication because the data type does not match'));
   });
 
   it('should return original error when error message is not needed to translate', () => {

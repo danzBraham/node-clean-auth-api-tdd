@@ -1,4 +1,4 @@
-const GetAuthenticationUseCase = require('../../../../Applications/use_case/GetAuthenticationUseCase');
+const AuthenticationUseCase = require('../../../../Applications/use_case/AuthenticationUseCase');
 
 class AuthenticationsHandler {
   constructor(container) {
@@ -7,8 +7,8 @@ class AuthenticationsHandler {
   }
 
   async postAuthenticationHandler(request, h) {
-    const getAuthenticationUseCase = this._container.getInstance(GetAuthenticationUseCase.name);
-    const tokens = await getAuthenticationUseCase.execute(request.payload);
+    const authenticationUseCase = this._container.getInstance(AuthenticationUseCase.name);
+    const tokens = await authenticationUseCase.getAuthentication(request.payload);
 
     const response = h.response({
       status: 'success',

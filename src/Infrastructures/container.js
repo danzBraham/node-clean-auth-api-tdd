@@ -19,7 +19,7 @@ const UserRepository = require('../Domains/user/UserRepository');
 const PasswordHash = require('../Applications/security/PasswordHash');
 const TokenManager = require('../Applications/token/TokenManager');
 const AddUserUseCase = require('../Applications/use_case/AddUserUseCase');
-const GetAuthenticationUseCase = require('../Applications/use_case/GetAuthenticationUseCase');
+const AuthenticationUseCase = require('../Applications/use_case/AuthenticationUseCase');
 
 // creating container
 const container = createContainer();
@@ -76,8 +76,8 @@ container.register([
     },
   },
   {
-    key: GetAuthenticationUseCase.name,
-    Class: GetAuthenticationUseCase,
+    key: AuthenticationUseCase.name,
+    Class: AuthenticationUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
