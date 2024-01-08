@@ -1,5 +1,5 @@
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
-const InvariantError = require('../../../Commons/exceptions/InvariantError');
+const AuthenticationError = require('../../../Commons/exceptions/AuthenticationError');
 const pool = require('../../database/postgres/pool');
 const AuthenticationRepositoryPostgres = require('../AuthenticationRepositoryPostgres');
 
@@ -36,7 +36,7 @@ describe('AuthenticationRepositoryPostgres', () => {
       // Action and Assert
       await expect(authenticationRepositoryPostgres.verifyRefreshToken(refreshToken))
         .rejects
-        .toThrow(InvariantError);
+        .toThrow(AuthenticationError);
     });
 
     it('should verify refresh token correctly', async () => {

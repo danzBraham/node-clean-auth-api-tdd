@@ -1,4 +1,5 @@
 const pool = require('../../database/postgres/pool');
+const TokenManager = require('../../../Applications/token/TokenManager');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
@@ -255,6 +256,49 @@ describe('HTTP server', () => {
       expect(response.statusCode).toEqual(401);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('Invalid password');
+    });
+  });
+
+  describe('When PUT /authentications', () => {
+    it('should response 200 and access token', async () => {
+      // Arrange
+      const tokenManager = container.getInstance(TokenManager.name);
+      const refreshToken = await tokenManager.generateRefreshToken({ id: 'user-123' });
+      const requestPayload = { refreshToken };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'PUT',
+        url: '/authentications',
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.accessToken).toBeDefined();
+    });
+
+    it('should response 401 when refresh token is invalid', async () => {
+      // Arrange
+      const refreshToken = 'refresh-token';
+      const requestPayload = { refreshToken };
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'PUT',
+        url: '/authentications',
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('Invalid refresh token');
     });
   });
 });

@@ -1,4 +1,4 @@
-const InvariantError = require('../../Commons/exceptions/InvariantError');
+const AuthenticationError = require('../../Commons/exceptions/AuthenticationError');
 const AuthenticationRepository = require('../../Domains/authentication/AuthenticationRepository');
 
 class AuthenticationRepositoryPostgres extends AuthenticationRepository {
@@ -25,7 +25,7 @@ class AuthenticationRepositoryPostgres extends AuthenticationRepository {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new InvariantError('Invalid refresh token');
+      throw new AuthenticationError('Invalid refresh token');
     }
   }
 
